@@ -6,7 +6,9 @@ import config
 
 openai.api_key = config.api_key
 
-#Contexto del asistente: https://platform.openai.com/docs/guides/chat/introduction
+#Roles: https://platform.openai.com/docs/guides/chat/introduction
+
+#Contexto del asistente
 messages = [{"role":"system",
         "content": "Eres un asistente muy util"}] #Se puede acotar mas el contexto
 
@@ -16,10 +18,10 @@ while True:
     content = input('Sobre que quieres hablar?')
 
     #Break para parar el programa
-    if content is "exit":
+    if content == "exit":
         break
 
-    #Hacemos que los mensajes sean constantes y se agregue uno tras otro
+    #Hacemos que los mensajes sean constantes y se agregue uno tras otro. Guarda el contexto del mensaje enviado por el usuario.
     messages.append({"role":"user", "content": content})
 
     #Basandonos en la documentacion: https://platform.openai.com/docs/models/gpt-3-5
@@ -27,4 +29,10 @@ while True:
     response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
                                 messages = messages)
 
-    print(response.choices[0].message.content)
+    response_content = response.choices[0].message.content
+
+
+    #contexto de las respuestas que el mismo chatgpt ha dado. Se guarda en el rol de asistente precisamente por eso
+    messages.append({"role":"assistant", "content": response_content})
+
+    print(response_content)
