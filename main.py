@@ -10,14 +10,21 @@ openai.api_key = config.api_key
 messages = [{"role":"system",
         "content": "Eres un asistente muy util"}] #Se puede acotar mas el contexto
 
-content = input('Sobre que quieres hablar?')
+#While para mantener la conversacion
+while True:
 
-#Hacemos que los mensajes sean constantes y se agregue uno tras otro
-messages.append({"role":"user", "content": content})
+    content = input('Sobre que quieres hablar?')
 
-#Basandonos en la documentacion: https://platform.openai.com/docs/models/gpt-3-5
-#Esta es la peticion que se le hace a Chat GPT para que responda. La pregunta la enviaremos desde content.
-response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
-                            messages = messages)
+    #Break para parar el programa
+    if content is "exit":
+        break
 
-print(response.choices[0].message.content)
+    #Hacemos que los mensajes sean constantes y se agregue uno tras otro
+    messages.append({"role":"user", "content": content})
+
+    #Basandonos en la documentacion: https://platform.openai.com/docs/models/gpt-3-5
+    #Esta es la peticion que se le hace a Chat GPT para que responda. La pregunta la enviaremos desde content.
+    response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
+                                messages = messages)
+
+    print(response.choices[0].message.content)
