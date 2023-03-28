@@ -10,7 +10,7 @@ def main():
     openai.api_key = config.api_key
 
     print("")
-    print("[bold green]Hola! Aca podras interactuar con Chat GPT[/bold green]")
+    print("💬 [bold green]Hola! Aca podras interactuar con Chat GPT[/bold green]")
     print("")
     print("Instrucciones")
     print("")
@@ -37,8 +37,9 @@ def main():
 
         #Volver a iniciar los mensajes
         if content == "new":
+            print('Nueva conversacion')
             messages = [context]
-            content = __promt
+            content = __promt()
 
         #Hacemos que los mensajes sean constantes y se agregue uno tras otro. Guarda el contexto del mensaje enviado por el usuario.
         messages.append({"role":"user", "content": content})
@@ -53,7 +54,7 @@ def main():
         #contexto de las respuestas que el mismo chatgpt ha dado. Se guarda en el rol de asistente precisamente por eso
         messages.append({"role":"assistant", "content": response_content})
 
-        print(response_content)
+        print(f"[bold green]> [/bold green] [green]{response_content}[/green]")
 
 #Funcion para manejar la respuesta del usuario y salida
 def __promt() -> str:
@@ -62,9 +63,10 @@ def __promt() -> str:
     if prompt == "exit":
         exit = typer.confirm("🛑Seguro que quieres salir?🛑")
         if exit:
+            print("Taluego!")
             raise typer.Abort()
 
-        return __promt
+        return __promt()
 
     return prompt
 
