@@ -18,6 +18,7 @@ def main():
 
     table = Table("comando", "Descripcion")
     table.add_row("exit", "Salir de la aplicacion")
+    table.add_row("new", "Crear una nueva conversacion")
 
     print(table)
     print("")
@@ -25,17 +26,19 @@ def main():
     #Roles: https://platform.openai.com/docs/guides/chat/introduction
 
     #Contexto del asistente
-    messages = [{"role":"system",
-            "content": "Eres un asistente muy util"}] #Se puede acotar mas el contexto
+    context = {"role":"system",
+            "content": "Eres un asistente muy util"} #Se puede acotar mas el contexto
+    messages = [context]
 
     #While para mantener la conversacion
     while True:
 
-        content = input('Sobre que quieres hablar?')
+        content = __promt()
 
-        #Break para parar el programa
-        if content == "exit":
-            break
+        #Volver a iniciar los mensajes
+        if content == "new":
+            messages = [context]
+            content = __promt
 
         #Hacemos que los mensajes sean constantes y se agregue uno tras otro. Guarda el contexto del mensaje enviado por el usuario.
         messages.append({"role":"user", "content": content})
@@ -51,6 +54,19 @@ def main():
         messages.append({"role":"assistant", "content": response_content})
 
         print(response_content)
+
+#Funcion para manejar la respuesta del usuario y salida
+def __promt() -> str:
+    prompt = typer.prompt("\nSobre que quieres hablar?") #\n salto de linea
+
+    if prompt == "exit":
+        exit = typer.confirm("🛑Seguro que quieres salir?🛑")
+        if exit:
+            raise typer.Abort()
+
+        return __promt
+
+    return prompt
 
 if __name__ == "__main__":
     typer.run(main)
