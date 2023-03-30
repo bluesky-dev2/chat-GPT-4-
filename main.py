@@ -10,20 +10,49 @@ from rich.table import Table
 #Main function
 def main():
 
-#Open AI API Key. taken from open ai website:
+    # Language menu
+    print("[bold white]Hi! Here you can interact with Chat GPT[/bold white]")
+    print("[bold green]But first, choose a Language:[/bold green]")
+    idiomas = {
+        "ES": "Español",
+        "EN": "English",
+        "FR": "Francais"
+    }
+    opciones_idiomas = "\n".join([f"- {idioma}" for idioma in idiomas.keys()])
+
+    #while loop to verify language
+    while True:
+        opciones_idiomas = "\n".join([f"- {idioma}" for idioma in idiomas.keys()])
+        seleccion_idioma = typer.prompt(f"{opciones_idiomas}\n").upper()
+
+        # Verificar selección de idioma
+        if seleccion_idioma in idiomas:
+            break
+
+        # Logic if language is not valid
+        elif seleccion_idioma.lower() in idiomas.values():
+            for key, value in idiomas.items():
+                if value.lower() == seleccion_idioma.lower():
+                    seleccion_idioma = key
+                    break
+            break
+        else:
+            print("[bold red]Error:[/bold red] Idioma no válido. Por favor ingresa un idioma válido.\n")
+
+    #Open AI API Key. taken from open ai website:
     openai.api_key = config.api_key
 
-#Main menu and welcome message to user
+    #Main menu and welcome message to user
     print("")
-    print("💬 [bold green]Hi! Here you can interact with Chat GPT[/bold green]")
-    print("")
+    print(f"💬 [bold green]Now you can interact with Chat GPT in {idiomas[seleccion_idioma]}[/bold green]")
     print("Instructions")
     print("")
 
-#Table of commands
-    table = Table("comando", "Descripcion")
-    table.add_row("exit", "Salir de la aplicacion")
-    table.add_row("new", "Crear una nueva conversacion")
+    #Table of commands
+    table = Table("Command", "Description")
+    table.add_row("exit", "Exit app")
+    table.add_row("new", "Create a new conversation")
+    table.add_row("cl", "Change Language")
 
     print(table)
     print("")
@@ -32,7 +61,7 @@ def main():
 
     #Assistant context
     context = {"role":"system",
-            "content": "Eres un asistente muy util"} #Se puede acotar mas el contexto
+            "content": f"Eres un asistente muy util en {idiomas[seleccion_idioma]}"} #Se puede acotar mas el contexto
     messages = [context]
 
     #While to keep conmversation contexts
@@ -69,7 +98,7 @@ def __promt() -> str:
     if prompt == "exit":
         exit = typer.confirm("🛑Seguro que quieres salir?🛑")
         if exit:
-            print("Taluego!")
+            print("Bye!")
             raise typer.Abort()
 
         return __promt()
