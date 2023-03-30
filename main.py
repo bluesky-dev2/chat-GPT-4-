@@ -93,10 +93,10 @@ def main():
 
 #Function to manage user response and exit
 def __promt() -> str:
-    prompt = typer.prompt("\nSobre que quieres hablar?") #\n salto de linea
+    prompt = typer.prompt("\nWhat do you want to talk about?") #\n salto de linea
 
     if prompt == "exit":
-        exit = typer.confirm("🛑Seguro que quieres salir?🛑")
+        exit = typer.confirm("🛑Are you sure you want to exit?🛑")
         if exit:
             print("Bye!")
             raise typer.Abort()
