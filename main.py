@@ -1,21 +1,26 @@
-import openai #Fue instalada anteriormente
+import openai #pip install openai
 import config #api_key = "api key from https://platform.openai.com/account/api-keys"
 
-import typer #Crear apps un poco mas interactivas en la terminal. https://typer.tiangolo.com/
-from rich import print #Libreria para mejorar visuales
+#Interactive apps in terminal. https://typer.tiangolo.com/
+import typer #pip install "typer[all]"
+
+from rich import print #Improve visuals. pip install rich
 from rich.table import Table
 
+#Main function
 def main():
 
+#Open AI API Key. taken from open ai website:
     openai.api_key = config.api_key
 
+#Main menu and welcome message to user
     print("")
-    print("💬 [bold green]Hola! Aca podras interactuar con Chat GPT[/bold green]")
+    print("💬 [bold green]Hi! Here you can interact with Chat GPT[/bold green]")
     print("")
-    print("Instrucciones")
+    print("Instructions")
     print("")
 
-
+#Table of commands
     table = Table("comando", "Descripcion")
     table.add_row("exit", "Salir de la aplicacion")
     table.add_row("new", "Crear una nueva conversacion")
@@ -25,38 +30,39 @@ def main():
 
     #Roles: https://platform.openai.com/docs/guides/chat/introduction
 
-    #Contexto del asistente
+    #Assistant context
     context = {"role":"system",
             "content": "Eres un asistente muy util"} #Se puede acotar mas el contexto
     messages = [context]
 
-    #While para mantener la conversacion
+    #While to keep conmversation contexts
     while True:
 
         content = __promt()
 
-        #Volver a iniciar los mensajes
+        #Start messages again
         if content == "new":
             print('Nueva conversacion')
             messages = [context]
             content = __promt()
 
-        #Hacemos que los mensajes sean constantes y se agregue uno tras otro. Guarda el contexto del mensaje enviado por el usuario.
+        #Save context of message sent by user. Save messages in line
         messages.append({"role":"user", "content": content})
 
-        #Basandonos en la documentacion: https://platform.openai.com/docs/models/gpt-3-5
-        #Esta es la peticion que se le hace a Chat GPT para que responda. La pregunta la enviaremos desde content.
+        #Documentation: https://platform.openai.com/docs/models/gpt-3-5
+        #Request to Chat GPT. Question is in mesage.
         response = openai.ChatCompletion.create(model="gpt-3.5-turbo",
                                     messages = messages)
 
+        #In all response, locate only the message
         response_content = response.choices[0].message.content
 
-        #contexto de las respuestas que el mismo chatgpt ha dado. Se guarda en el rol de asistente precisamente por eso
+        #Context of chat GPT answers. Saved in assistant role
         messages.append({"role":"assistant", "content": response_content})
 
         print(f"[bold green]> [/bold green] [green]{response_content}[/green]")
 
-#Funcion para manejar la respuesta del usuario y salida
+#Function to manage user response and exit
 def __promt() -> str:
     prompt = typer.prompt("\nSobre que quieres hablar?") #\n salto de linea
 
