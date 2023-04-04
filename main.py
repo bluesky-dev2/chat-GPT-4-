@@ -6,6 +6,9 @@ import typer #pip install "typer[all]"
 
 from rich import print #Improve visuals. pip install rich
 from rich.table import Table
+from rich.console import Console
+import pathlib
+
 
 #Main function
 def main():
@@ -74,6 +77,35 @@ def main():
             print('Nueva conversacion')
             messages = [context]
             content = __promt()
+
+        #Change language
+        elif content == "cl":
+            while True:
+                opciones_idiomas = "\n".join([f"- {idioma}" for idioma in idiomas.keys()])
+                seleccion_idioma = typer.prompt(f"{opciones_idiomas}\n").upper()
+
+                # Verificar selección de idioma
+                if seleccion_idioma in idiomas:
+                    # Update language selection and print confirmation message
+                    seleccion_idioma_key = seleccion_idioma
+                    seleccion_idioma = idiomas[seleccion_idioma]
+                    print(f"\n[bold green]Language changed to {seleccion_idioma}[/bold green]\n")
+                    break
+
+                # Logic if language is not valid
+                elif seleccion_idioma.lower() in idiomas.values():
+                    for key, value in idiomas.items():
+                        if value.lower() == seleccion_idioma.lower():
+                            seleccion_idioma = key
+                            break
+                    break
+                else:
+                    print("[bold red]Error:[/bold red] Invalid language. Please enter a valid language.\n")
+            #Save context of language change
+            messages.append({"role":"system", "content": f"Idioma cambiado a {idiomas[seleccion_idioma]}"})
+
+            #Break to return to main while loop
+            break
 
         #Save context of message sent by user. Save messages in line
         messages.append({"role":"user", "content": content})
